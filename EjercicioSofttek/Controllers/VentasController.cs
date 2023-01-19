@@ -1,7 +1,10 @@
 ﻿using EjercicioSofttek.Data;
 using EjercicioSofttek.Models;
+using EjercicioSofttek.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace EjercicioSofttek.Controllers
 {
@@ -28,52 +31,93 @@ namespace EjercicioSofttek.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult> GetAll()
         {
-            var listarVentas = await context.Ventas.ToListAsync();
-            return Ok(listarVentas);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            
+            var rToken = Token.validarToken(identity, context);
+            if (rToken.success)
+            {
+                var listarVentas = await context.Ventas.ToListAsync();
+                return Ok(listarVentas);
+            }
+            return NotFound();
+            
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult> GeTById(int id)
         {
-            var listarVentas = await context.Ventas.FirstOrDefaultAsync(s  => s.Id == id);
-            if (listarVentas == null) return NotFound();
-            return Ok(listarVentas); 
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var rToken = Token.validarToken(identity, context);
+
+            if (rToken.success)
+            {
+                var listarVentas = await context.Ventas.FirstOrDefaultAsync(s => s.Id == id);
+                if (listarVentas == null) return NotFound();
+                return Ok(listarVentas);
+            }
+            return NotFound();
             
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> Save(Ventas ventas)
         {
-           context.Ventas.Add(ventas);
-           await   context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GeTById), new { id = ventas.Id }, ventas); 
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var rToken = Token.validarToken(identity, context);
 
+            if (rToken.success)
+            {
+                context.Ventas.Add(ventas);
+                await context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GeTById), new { id = ventas.Id }, ventas);
+            }
+            return NotFound();
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<ActionResult> Update(int id, Ventas ventas)        {
             
-            if (id == ventas.Id)
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var rToken = Token.validarToken(identity, context);
+
+            if (rToken.success)
             {
-                context.Entry(ventas).State = EntityState.Modified;
+                if (id == ventas.Id)
+                {
+                    context.Entry(ventas).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                    return NoContent();
+                }
+                return BadRequest();
+
+            }
+            return BadRequest();
+        }
+         
+        
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var rToken = Token.validarToken(identity, context);
+
+            if (rToken.success)
+            {
+                var ventas = await context.Ventas.FindAsync(id);
+                if (ventas == null) return NotFound();
+
+                context.Ventas.Remove(ventas);
                 await context.SaveChangesAsync();
                 return NoContent();
             }
-
             return BadRequest();
-
-        }
-         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var ventas = await context.Ventas.FindAsync(id);
-            if (ventas == null)  return NotFound();
-            
-            context.Ventas.Remove(ventas);
-            await context.SaveChangesAsync();
-            return NoContent();
         }
 
     }
