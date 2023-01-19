@@ -11,7 +11,7 @@ namespace EjercicioSofttek.Data
         
         }
         public DbSet<Ventas> Ventas { get; set; }
-
+        public DbSet<AsesorComercial> asesorComercials { get; set; }    
         
     }
 }

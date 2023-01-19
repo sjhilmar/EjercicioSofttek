@@ -17,9 +17,9 @@ namespace EjercicioSofttek.Controllers
             if (context .Ventas.Count() == 0)
             {
                 List<Ventas> venta = new List<Ventas>();
-                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Primer cliente", vendedor = "Vendedor 1", importe = 1500, producto = "LapTop" });
-                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Segundo cliente", vendedor = "Vendedor 1", importe = 8500, producto = "Servidor" });
-                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Tercer cliente", vendedor = "Vendedor 2", importe = 750, producto = "Monitor" });
+                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Primer cliente", vendedor = "Asesor1", importe = 1500, producto = "LapTop" });
+                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Segundo cliente", vendedor = "Asesor1", importe = 8500, producto = "Servidor" });
+                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Tercer cliente", vendedor = "Asesor1", importe = 750, producto = "Monitor" });
                 context.Ventas.AddRange(venta);
                 context.SaveChanges();  
 
@@ -38,17 +38,13 @@ namespace EjercicioSofttek.Controllers
         public async Task<ActionResult> GeTById(int id)
         {
             var listarVentas = await context.Ventas.FirstOrDefaultAsync(s  => s.Id == id);
-            if (listarVentas == null)
-            {
-                return NotFound();
-            }  else { 
-                return Ok(listarVentas); 
-            }    
+            if (listarVentas == null) return NotFound();
+            return Ok(listarVentas); 
             
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add(Ventas ventas)
+        public async Task<ActionResult> Save(Ventas ventas)
         {
            context.Ventas.Add(ventas);
            await   context.SaveChangesAsync();
@@ -57,7 +53,7 @@ namespace EjercicioSofttek.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, Ventas ventas)        {
+        public async Task<ActionResult> Update(int id, Ventas ventas)        {
             
             if (id == ventas.Id)
             {
@@ -73,10 +69,8 @@ namespace EjercicioSofttek.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var ventas = await context.Ventas.FindAsync(id);
-            if (ventas == null)
-            {
-                return NotFound();
-            }
+            if (ventas == null)  return NotFound();
+            
             context.Ventas.Remove(ventas);
             await context.SaveChangesAsync();
             return NoContent();
