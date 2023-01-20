@@ -25,7 +25,6 @@ namespace EjercicioSofttek.Controllers
         }
 
         [HttpGet]
-        
         public async Task<ActionResult>GetAll()
         {
             var listarAsesor = await context.asesorComercials.ToListAsync();

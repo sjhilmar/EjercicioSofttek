@@ -25,11 +25,11 @@ namespace EjercicioSofttek.Controllers
         }
         
         [HttpPost]
-        public dynamic IniciarSesion([FromBody] Object optData)
+        public dynamic GenerarToken([FromBody] Object optData)
         {
 
             var data = JsonConvert.DeserializeObject<dynamic> (optData.ToString ());    
-            int id = data.id ;
+            int id = data.Id ;
             string descripcion = data.descripcion;
 
             //var asesor = context.asesorComercials.Where(x => x.Id == id).FirstOrDefault();

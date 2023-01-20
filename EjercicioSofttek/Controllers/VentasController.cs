@@ -20,9 +20,9 @@ namespace EjercicioSofttek.Controllers
             if (context .Ventas.Count() == 0)
             {
                 List<Ventas> venta = new List<Ventas>();
-                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Primer cliente", vendedor = "Asesor1", importe = 1500, producto = "LapTop" });
-                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Segundo cliente", vendedor = "Asesor1", importe = 8500, producto = "Servidor" });
-                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Tercer cliente", vendedor = "Asesor1", importe = 750, producto = "Monitor" });
+                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Primer cliente", vendedor = "Asesor1", producto = "LapTop" ,cantidad=1 ,precio=1500 , importe = 1500 });
+                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Segundo cliente", vendedor = "Asesor1", producto = "Servidor", cantidad = 1, precio = 8500, importe = 8500 });
+                venta.Add(new Ventas { fecha = DateTime.Now, cliente = "Tercer cliente", vendedor = "Asesor1", producto = "Monitor", cantidad = 1, precio = 750, importe = 750 });
                 context.Ventas.AddRange(venta);
                 context.SaveChanges();  
 
